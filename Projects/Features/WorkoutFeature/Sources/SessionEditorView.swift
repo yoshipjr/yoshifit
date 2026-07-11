@@ -1,5 +1,6 @@
 import SwiftUI
 import SwiftData
+import UIKit
 import AudioToolbox
 import CoreKit
 import DesignSystem
@@ -89,6 +90,9 @@ public struct SessionEditorView: View {
             .background(AppColor.screenBackground)
         }
         .background(AppColor.screenBackground)
+        .scrollDismissesKeyboard(.immediately)
+        .simultaneousGesture(TapGesture().onEnded { hideKeyboard() })
+        .onSubmit { hideKeyboard() }
         .navigationTitle(titleText)
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
@@ -285,6 +289,10 @@ public struct SessionEditorView: View {
             }
         }
     }
+
+    private func hideKeyboard() {
+        UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
+    }
 }
 
 private struct ExerciseEntryCard: View {
@@ -315,8 +323,13 @@ private struct ExerciseEntryCard: View {
             }
 
             TextField("メモを入力", text: $entry.memo)
+                .submitLabel(.done)
                 .padding(AppSpacing.small)
                 .background(AppColor.screenBackground, in: RoundedRectangle(cornerRadius: 8))
+                .overlay(
+                    RoundedRectangle(cornerRadius: 8)
+                        .stroke(AppColor.secondaryText.opacity(0.35), lineWidth: 1)
+                )
 
             HStack {
                 Text("セット").frame(width: 40, alignment: .leading)
@@ -381,16 +394,26 @@ private struct SetRow: View {
 
             TextField("0", value: $set.weight, format: .number)
                 .keyboardType(.decimalPad)
+                .submitLabel(.done)
                 .multilineTextAlignment(.center)
                 .padding(6)
                 .background(AppColor.screenBackground, in: RoundedRectangle(cornerRadius: 6))
+                .overlay(
+                    RoundedRectangle(cornerRadius: 6)
+                        .stroke(AppColor.secondaryText.opacity(0.35), lineWidth: 1)
+                )
                 .frame(maxWidth: .infinity)
 
             TextField("0", value: $set.reps, format: .number)
                 .keyboardType(.numberPad)
+                .submitLabel(.done)
                 .multilineTextAlignment(.center)
                 .padding(6)
                 .background(AppColor.screenBackground, in: RoundedRectangle(cornerRadius: 6))
+                .overlay(
+                    RoundedRectangle(cornerRadius: 6)
+                        .stroke(AppColor.secondaryText.opacity(0.35), lineWidth: 1)
+                )
                 .frame(maxWidth: .infinity)
 
             Button {
@@ -471,4 +494,25 @@ private struct SessionActionMenuSheet: View {
         .presentationDetents([.height(300)])
         .presentationDragIndicator(.hidden)
     }
+}
+
+#Preview {
+    let container = PersistenceController.makeContainer(inMemory: true)
+    let session = WorkoutSession(date: .now)
+    let benchPress = WorkoutExerciseEntry(exerciseName: "ベンチプレス", muscleGroup: .chest, sortOrder: 0)
+    benchPress.sets = [
+        SetEntry(weight: 60, reps: 10, sortOrder: 0),
+        SetEntry(weight: 65, reps: 8, sortOrder: 1),
+    ]
+    let squat = WorkoutExerciseEntry(exerciseName: "スクワット", muscleGroup: .legs, sortOrder: 1)
+    squat.sets = [
+        SetEntry(weight: 80, reps: 10, sortOrder: 0),
+    ]
+    session.entries = [benchPress, squat]
+    container.mainContext.insert(session)
+
+    return NavigationStack {
+        SessionEditorView(session: session)
+    }
+    .modelContainer(container)
 }

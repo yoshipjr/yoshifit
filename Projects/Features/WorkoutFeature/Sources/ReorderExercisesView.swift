@@ -1,4 +1,5 @@
 import SwiftUI
+import SwiftData
 import CoreKit
 import DesignSystem
 
@@ -58,4 +59,18 @@ struct ReorderExercisesView: View {
             entry.sortOrder = index
         }
     }
+}
+
+#Preview {
+    let container = PersistenceController.makeContainer(inMemory: true)
+    let session = WorkoutSession(date: .now)
+    session.entries = [
+        WorkoutExerciseEntry(exerciseName: "ベンチプレス", muscleGroup: .chest, sortOrder: 0),
+        WorkoutExerciseEntry(exerciseName: "スクワット", muscleGroup: .legs, sortOrder: 1),
+        WorkoutExerciseEntry(exerciseName: "デッドリフト", muscleGroup: .back, sortOrder: 2),
+    ]
+    container.mainContext.insert(session)
+
+    return ReorderExercisesView(session: session)
+        .modelContainer(container)
 }
