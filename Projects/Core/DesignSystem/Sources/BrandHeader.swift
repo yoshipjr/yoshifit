@@ -17,16 +17,14 @@ public struct BrandHeader: View {
 
     public var body: some View {
         HStack {
-            HStack(spacing: 4) {
-                ForEach(0..<4, id: \.self) { index in
-                    Capsule()
-                        .fill(Color.white)
-                        .frame(width: 3, height: 18 - CGFloat(index) * 3)
-                }
+            HStack(spacing: 8) {
+                Image("BrandMark", bundle: .main)
+                    .resizable()
+                    .aspectRatio(contentMode: .fit)
+                    .frame(width: 28, height: 28)
                 Text(AppBrand.displayName)
                     .font(.title2.bold().italic())
                     .foregroundStyle(.white)
-                    .padding(.leading, 4)
             }
 
             Spacer()
