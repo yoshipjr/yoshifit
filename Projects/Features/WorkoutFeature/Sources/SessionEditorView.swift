@@ -113,7 +113,7 @@ public struct SessionEditorView: View {
         }
         .fullScreenCover(isPresented: $isPresentingCompletion) {
             WorkoutCompletionView(session: session) {
-                isPresentingCompletion = false
+                completeAndReturnToCalendar()
             }
         }
         .sheet(isPresented: $isPresentingRestTimer) {
@@ -265,6 +265,12 @@ public struct SessionEditorView: View {
         session.durationMinutes = max(session.durationMinutes, elapsedSeconds / 60)
         try? modelContext.save()
         isPresentingCompletion = true
+    }
+
+    private func completeAndReturnToCalendar() {
+        isPresentingCompletion = false
+        AppRouter.shared.showCalendar(for: session.date)
+        dismiss()
     }
 
     private func startRestTimer() {

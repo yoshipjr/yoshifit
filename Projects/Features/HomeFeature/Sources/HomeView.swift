@@ -22,7 +22,7 @@ public struct HomeView: View {
             }
             .background(AppColor.screenBackground)
             .safeAreaInset(edge: .top, spacing: 0) {
-                BrandHeader(notificationCount: 6)
+                BrandHeader()
                     .background(AppColor.brand)
             }
             .toolbar(.hidden, for: .navigationBar)

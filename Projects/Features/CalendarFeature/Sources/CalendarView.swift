@@ -9,6 +9,7 @@ public struct CalendarView: View {
     @State private var viewModel = CalendarViewModel()
     @State private var displayedMonth = Date()
     @State private var selectedDate: Date?
+    private let router = AppRouter.shared
 
     private let weekdaySymbols = ["日", "月", "火", "水", "木", "金", "土"]
     private let columns = Array(repeating: GridItem(.flexible()), count: 7)
@@ -30,6 +31,12 @@ public struct CalendarView: View {
             .navigationBarTitleDisplayMode(.inline)
         }
         .task { await viewModel.onAppear() }
+        .onChange(of: router.pendingCalendarDate) { _, newDate in
+            guard let newDate else { return }
+            displayedMonth = newDate
+            selectedDate = newDate
+            router.pendingCalendarDate = nil
+        }
     }
 
     private var monthHeader: some View {
@@ -109,7 +116,7 @@ public struct CalendarView: View {
             VStack(spacing: 4) {
                 Text("\(Calendar.current.component(.day, from: day))")
                     .font(.body)
-                    .foregroundStyle(isSelected || isToday ? AppColor.brand : .primary)
+                    .foregroundStyle(isSelected ? .blue : (isToday ? AppColor.brand : .primary))
                     .fontWeight(isSelected || isToday ? .bold : .regular)
                 HStack(spacing: 2) {
                     ForEach(groups.prefix(4)) { group in
