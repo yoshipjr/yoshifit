@@ -1,10 +1,14 @@
 import SwiftUI
+import SwiftData
 import CoreKit
 import DesignSystem
 
 public struct SettingsView: View {
+    @Environment(\.modelContext) private var modelContext
+    @Query private var sessions: [WorkoutSession]
     @State private var viewModel = SettingsViewModel()
     @State private var targets: [MuscleGroup: Int] = [:]
+    @State private var didSendTestNotification = false
 
     public init() {}
 
@@ -40,6 +44,7 @@ public struct SettingsView: View {
                                     set: { newValue in
                                         targets[group] = newValue
                                         viewModel.setRestTarget(newValue, for: group)
+                                        TrainingOverdueNotifier.reschedule(using: modelContext)
                                     }
                                 ),
                                 in: 1...14
@@ -52,6 +57,22 @@ public struct SettingsView: View {
                 Section {
                     LabeledContent("バージョン", value: "1.0.0")
                 }
+
+#if DEBUG
+                Section("デバッグ") {
+                    Button {
+                        TrainingOverdueNotifier.sendTestNotification(sessions: sessions)
+                        didSendTestNotification = true
+                    } label: {
+                        Text("超過通知をテスト送信（5秒後）")
+                    }
+                    if didSendTestNotification {
+                        Text("送信しました。ホーム画面に戻って確認してください。")
+                            .font(.caption)
+                            .foregroundStyle(AppColor.secondaryText)
+                    }
+                }
+#endif
             }
             .navigationTitle("設定")
         }

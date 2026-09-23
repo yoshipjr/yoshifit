@@ -264,6 +264,7 @@ public struct SessionEditorView: View {
         session.finishedAt = Date()
         session.durationMinutes = max(session.durationMinutes, elapsedSeconds / 60)
         try? modelContext.save()
+        TrainingOverdueNotifier.reschedule(using: modelContext)
         isPresentingCompletion = true
     }
 
