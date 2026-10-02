@@ -30,5 +30,8 @@ Derived/
 ### Tuist managed dependencies ###
 Tuist/.build
 
+### Local signing (contains DEVELOPMENT_TEAM, not committed) ###
+Projects/App/Signing.xcconfig
+
 ### Claude Code ###
 .claude/settings.local.json

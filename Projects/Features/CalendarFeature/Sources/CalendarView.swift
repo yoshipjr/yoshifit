@@ -116,7 +116,7 @@ public struct CalendarView: View {
             VStack(spacing: 4) {
                 Text("\(Calendar.current.component(.day, from: day))")
                     .font(.body)
-                    .foregroundStyle(isSelected ? .blue : (isToday ? AppColor.brand : .primary))
+                    .foregroundStyle(isSelected ? .orange : (isToday ? AppColor.brand : .primary))
                     .fontWeight(isSelected || isToday ? .bold : .regular)
                 HStack(spacing: 2) {
                     ForEach(groups.prefix(4)) { group in

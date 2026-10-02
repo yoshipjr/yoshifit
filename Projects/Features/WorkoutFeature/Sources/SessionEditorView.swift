@@ -270,6 +270,7 @@ public struct SessionEditorView: View {
 
     private func completeAndReturnToCalendar() {
         isPresentingCompletion = false
+        HealthKitWriter.shared.saveWorkout(session: session)
         AppRouter.shared.showCalendar(for: session.date)
         dismiss()
     }

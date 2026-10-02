@@ -2,8 +2,8 @@ import SwiftUI
 import CoreKit
 
 public enum AppColor {
-    /// yoshifit brand green.
-    public static let brand = Color(red: 0.55, green: 0.78, blue: 0.16)
+    /// yoshifit brand blue (#1A56DB).
+    public static let brand = Color(red: 0.102, green: 0.337, blue: 0.859)
     public static let accent = brand
     public static let screenBackground = Color(.secondarySystemBackground)
     public static let cardBackground = Color(.systemBackground)

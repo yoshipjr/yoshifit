@@ -18,12 +18,17 @@ let project = Project(
                         "UIColorName": "",
                         "UIImageName": "",
                     ],
+                    "NSHealthUpdateUsageDescription": "トレーニング記録(消費カロリー・時間)をヘルスケアに書き込むために使用します。",
                 ]
             ),
             buildableFolders: [
                 "Sources",
                 "Resources",
             ],
+            entitlements: .dictionary([
+                "com.apple.developer.healthkit": .boolean(true),
+                "com.apple.developer.healthkit.access": .array([]),
+            ]),
             dependencies: [
                 .project(target: "CoreKit", path: "../Core/CoreKit"),
                 .project(target: "DesignSystem", path: "../Core/DesignSystem"),
@@ -32,7 +37,14 @@ let project = Project(
                 .project(target: "WorkoutFeature", path: "../Features/WorkoutFeature"),
                 .project(target: "MenuFeature", path: "../Features/MenuFeature"),
                 .project(target: "SettingsFeature", path: "../Features/SettingsFeature"),
-            ]
+            ],
+            // DEVELOPMENT_TEAM is read from the gitignored Signing.xcconfig at generate-time
+            // (see ProjectHelper.developmentTeam). Copy Signing.xcconfig.example to
+            // Signing.xcconfig and fill in your team ID.
+            settings: .settings(base: [
+                "CODE_SIGN_STYLE": "Automatic",
+                "DEVELOPMENT_TEAM": SettingValue(stringLiteral: ProjectHelper.developmentTeam),
+            ])
         ),
         .target(
             name: "WorkoutTests",
