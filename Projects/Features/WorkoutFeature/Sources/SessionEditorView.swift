@@ -277,7 +277,7 @@ public struct SessionEditorView: View {
 
     private func startRestTimer() {
         guard showsLiveWorkoutFlow, session.startedAt != nil else { return }
-        restRemainingSeconds = 60
+        restRemainingSeconds = 120
         isRestRunning = true
         if RestTimerSettingsStore.shared.isPopupEnabled {
             isPresentingRestTimer = true
