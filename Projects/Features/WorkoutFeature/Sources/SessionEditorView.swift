@@ -138,6 +138,7 @@ public struct SessionEditorView: View {
             SessionActionMenuSheet(
                 session: session,
                 onReorder: { isPresentingReorder = true },
+                onShowTimer: { showRestTimerManually() },
                 onDeleteRequested: { isPresentingDeleteConfirmation = true }
             )
         }
@@ -282,6 +283,14 @@ public struct SessionEditorView: View {
         if RestTimerSettingsStore.shared.isPopupEnabled {
             isPresentingRestTimer = true
         }
+    }
+
+    private func showRestTimerManually() {
+        if !isRestRunning {
+            restRemainingSeconds = 120
+            isRestRunning = true
+        }
+        isPresentingRestTimer = true
     }
 
     private func tick() {
@@ -445,6 +454,7 @@ private struct SetRow: View {
 private struct SessionActionMenuSheet: View {
     let session: WorkoutSession
     let onReorder: () -> Void
+    let onShowTimer: () -> Void
     let onDeleteRequested: () -> Void
     @Environment(\.dismiss) private var dismiss
 
@@ -485,6 +495,19 @@ private struct SessionActionMenuSheet: View {
 
             Button {
                 dismiss()
+                onShowTimer()
+            } label: {
+                HStack(spacing: AppSpacing.medium) {
+                    Image(systemName: "timer")
+                    Text("タイマーを表示")
+                    Spacer()
+                }
+                .foregroundStyle(.primary)
+            }
+            .buttonStyle(.plain)
+
+            Button {
+                dismiss()
                 onDeleteRequested()
             } label: {
                 HStack(spacing: AppSpacing.medium) {
@@ -499,7 +522,7 @@ private struct SessionActionMenuSheet: View {
             Spacer()
         }
         .padding(AppSpacing.large)
-        .presentationDetents([.height(300)])
+        .presentationDetents([.height(360)])
         .presentationDragIndicator(.hidden)
     }
 }
